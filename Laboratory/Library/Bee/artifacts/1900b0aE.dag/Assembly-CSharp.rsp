@@ -389,8 +389,12 @@
 -analyzer:"C:/Program Files/Unity/Hub/Editor/2023.2.16f1/Editor/Data/Tools/Unity.SourceGenerators/Unity.UIToolkit.SourceGenerator.dll"
 "Assets/Resources/CameraSwitchSctipt.cs"
 "Assets/Resources/MousePointerScript.cs"
+"Assets/Resources/Objects/Contraption/ContraptionZoneData.cs"
+"Assets/Resources/Objects/Contraption/OnSwitchButtonScript.cs"
 "Assets/Resources/Objects/Contraption/SocketScript.cs"
 "Assets/Resources/Objects/Contraption/SocketsSystemScript.cs"
+"Assets/Resources/Objects/Contraption/VoltageControllerScriptllerScript.cs"
+"Assets/Resources/Objects/Pc/AppScript.cs"
 "Assets/Resources/Objects/Pc/MoveAppScreen.cs"
 "Assets/Resources/Objects/Pc/PcManager.cs"
 -langversion:9.0

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Windows.Speech;
 
@@ -7,8 +8,8 @@ public class SocketsSystemScript : MonoBehaviour
     Dictionary<int, List<int>> socketDictionary;
     GameObject[] sockets;
     List<int> matchingSockets;
-    bool isAllMatched = false;
-    bool isMatchingInProgress = false;
+    public bool IsAllMatched = false;
+    //bool isMatchingInProgress = false;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -25,6 +26,10 @@ public class SocketsSystemScript : MonoBehaviour
     void Update()
     {
         MatchSockets();
+        if (sockets.Contains(null))
+            IsAllMatched = false;
+        else
+            IsAllMatched = true;
     }
 
     public void RegisterSocket(GameObject socket)
@@ -92,5 +97,16 @@ public class SocketsSystemScript : MonoBehaviour
         }
         socketScript.ApplyMatching();
         matchingSockets.Clear();
+    }
+
+    public void MatchAllSockets()
+    {
+        var allSockets = GameObject.FindGameObjectsWithTag("Socket");
+        foreach (var socket in allSockets)
+        {
+           var socketScript = socket.GetComponent<SocketScript>();
+            sockets[socketScript.SocketID] = socket;
+            socketScript.ApplyMatching();
+        }
     }
 }
