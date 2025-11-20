@@ -387,6 +387,7 @@
 -analyzer:"E:/Unity Hub/Editor/2023.2.16f1/Editor/Data/Tools/Unity.SourceGenerators/Unity.Properties.SourceGenerator.dll"
 -analyzer:"E:/Unity Hub/Editor/2023.2.16f1/Editor/Data/Tools/Unity.SourceGenerators/Unity.SourceGenerators.dll"
 -analyzer:"E:/Unity Hub/Editor/2023.2.16f1/Editor/Data/Tools/Unity.SourceGenerators/Unity.UIToolkit.SourceGenerator.dll"
+"Assets/EmitElectron.cs"
 "Assets/Resources/CameraSwitchSctipt.cs"
 "Assets/Resources/MousePointerScript.cs"
 "Assets/Resources/Objects/Contraption/ContraptionZoneData.cs"
