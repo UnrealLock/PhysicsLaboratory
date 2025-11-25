@@ -394,7 +394,10 @@
 "Assets/Resources/Objects/Contraption/SocketScript.cs"
 "Assets/Resources/Objects/Contraption/SocketsSystemScript.cs"
 "Assets/Resources/Objects/Contraption/VoltageControllerScriptllerScript.cs"
-"Assets/Resources/Objects/Pc/AppScript.cs"
+"Assets/Resources/Objects/Pc/App/AppScript.cs"
+"Assets/Resources/Objects/Pc/App/GraphCreatorScript.cs"
+"Assets/Resources/Objects/Pc/App/TabletCeatorScript.cs"
+"Assets/Resources/Objects/Pc/GraphSystem.cs"
 "Assets/Resources/Objects/Pc/MoveAppScreen.cs"
 "Assets/Resources/Objects/Pc/PcManager.cs"
 -langversion:9.0
