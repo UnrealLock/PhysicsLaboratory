@@ -23,17 +23,53 @@ public class SocketsSystemScript : MonoBehaviour
     private void Start()
     {
         ParseConnections();
+
+        var allSockets = FindObjectsOfType<SocketScript>();
+
         sockets = new GameObject[14];
         matchingSockets = new List<int>();
+
+        foreach (var socket in allSockets)
+        {
+            sockets[socket.SocketID] = socket.gameObject;
+        }
     }
 
     private void Update()
     {
         MatchSockets();
-        if (sockets.Contains(null))
-            IsAllMatched = false;
-        else
-            IsAllMatched = true;
+        //if (sockets.Contains(null))
+        //    IsAllMatched = false;
+        //else
+        //    IsAllMatched = true;
+        IsAllMatched = CheckAllConnectionsMatched();
+    }
+
+    public void AutoCreateAllConnections()
+    {
+        foreach (var pair  in socketDictionary)
+        {
+            int startID = pair.Key;
+
+            if (startID < 0 || startID >= sockets.Length) continue;
+            if (sockets[startID] == null) continue;
+
+            foreach (var endID in pair.Value)
+            {
+                if (endID <= startID) continue;
+
+                if (endID < 0 || endID >= sockets.Length) continue;
+                if (sockets[endID] == null) continue;
+
+                GameObject startSocket = sockets[startID];
+                GameObject endSocket = sockets[endID];
+
+                CreateWireConnection(startSocket, endSocket);
+
+                startSocket.GetComponent<SocketScript>().ApplyMatching();
+                endSocket.GetComponent<SocketScript>().ApplyMatching();
+            }
+        }
     }
 
     public void RegisterSocket(GameObject socket)
@@ -41,6 +77,20 @@ public class SocketsSystemScript : MonoBehaviour
         var socketScript = socket.GetComponent<SocketScript>();
         sockets[socketScript.SocketID] = socket;
         matchingSockets.Add(socketScript.SocketID);
+    }
+
+    private bool CheckAllConnectionsMatched()
+    {
+        foreach (var pair in socketDictionary)
+        {
+            int socketID = pair.Key;
+            if (sockets[socketID] == null) return false;
+
+            var socketScript = sockets[socketID].GetComponent<SocketScript>();
+            if (!socketScript.IsMatched) return false;
+        }
+
+        return true;
     }
 
     private void MatchSockets()
@@ -70,8 +120,8 @@ public class SocketsSystemScript : MonoBehaviour
 
             sockets[matchingSockets[0]].GetComponent<SocketScript>().ResetSocket();
             sockets[matchingSockets[1]].GetComponent<SocketScript>().ResetSocket();
-            sockets[matchingSockets[0]] = null;
-            sockets[matchingSockets[1]] = null;
+            //sockets[matchingSockets[0]] = null;
+            //sockets[matchingSockets[1]] = null;
         }
 
         matchingSockets.Clear();

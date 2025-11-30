@@ -26,12 +26,19 @@ public class VoltageControllerScriptllerScript : MonoBehaviour
         var rightMouseAction = InputSystem.GetDevice<Mouse>().rightButton.isPressed ? 1 : 0;
         if (collision.gameObject.tag != "ContraptionMousePointer" || isCooldown)
             return;
+
+        var rot = transform.eulerAngles;
+
         if (leftMouseAction > 0)
         {
             var contraptionZoneData = GameObject.FindGameObjectWithTag("ContraptionZone").GetComponent<ContraptionZoneData>();
             contraptionZoneData.Voltage += VoltageChangeValue;
             if (contraptionZoneData.Voltage > 0.5)
                 contraptionZoneData.Voltage = 0.0;
+
+            rot.z += 2f;
+            transform.eulerAngles = rot;
+
             StartCoroutine(Cooldown(0.2f));
         }
         else if (rightMouseAction > 0)
@@ -40,6 +47,10 @@ public class VoltageControllerScriptllerScript : MonoBehaviour
             contraptionZoneData.Voltage -= 1.0;
             if (contraptionZoneData.Voltage < 0.0)
                 contraptionZoneData.Voltage = 5.0;
+
+            rot.z -= 2f;
+            transform.eulerAngles = rot;
+
             StartCoroutine(Cooldown(0.2f));
         }
     }
