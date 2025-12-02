@@ -16,6 +16,7 @@ public class TabletCeatorScript : MonoBehaviour
     List<float[]> firstTabletDataRows = new List<float[]>();
     List<float[]> secondTabletDataRows = new List<float[]>();
     ContraptionZoneData contraptionZoneData;
+    SecondGraphCreatorScript secondGraphCreatorScript;
     int rowCount = 0;
     // Start is called before the first frame update
     void Start()
@@ -29,6 +30,7 @@ public class TabletCeatorScript : MonoBehaviour
         secondTabletContent = secondTablet.transform.GetChild(0).GetChild(0).gameObject;
         secondTabletStartRow = secondTabletContent.transform.GetChild(0).gameObject;
         contraptionZoneData = GameObject.FindGameObjectWithTag("ContraptionZone").GetComponent<ContraptionZoneData>();
+        secondGraphCreatorScript = transform.GetComponent<SecondGraphCreatorScript>();
     }
 
     // Update is called once per frame
@@ -63,7 +65,7 @@ public class TabletCeatorScript : MonoBehaviour
     public void FillSecondTabletRow(float voltage)
     {
         var velocity = System.Math.Round(592.7 * System.Math.Sqrt(voltage), 3);
-        var powerTheor = 1000000 * velocity * velocity / System.Math.Pow(contraptionZoneData.T, 3/2) * 
+        var powerTheor = velocity * velocity / System.Math.Pow(contraptionZoneData.T, 3/2) * 
             System.Math.Exp(-3.3 / 100 * velocity * velocity / contraptionZoneData.T);
         powerTheor = System.Math.Round(powerTheor, 3);
         secondTabletDataRows.Add(new float[3] { (float)velocity, (float)powerTheor, 0f });
@@ -77,6 +79,8 @@ public class TabletCeatorScript : MonoBehaviour
             for (int i = 0; i < dataRow.Length - 1; i++)
                 newRow.transform.GetChild(i).GetComponent<TextMeshProUGUI>().text = dataRow[i].ToString();
             RefillPowerExpRow();
+            secondGraphCreatorScript.AddLineToFirstGraph(dataRow[0], dataRow[1]);
+            RedrawPowerExpGraph();
         }
         rowCount++;
     }
@@ -91,9 +95,18 @@ public class TabletCeatorScript : MonoBehaviour
         }
         for (int i = 3; i < secondTabletContent.transform.childCount; i++)
         {
+            secondTabletDataRows[i - 2][2] = (float)System.Math.Round(firstTabletDataRows[i - 2][3] / maxDerivative, 3);
             secondTabletContent.transform.GetChild(i).GetChild(2).GetComponent<TextMeshProUGUI>().text =
-                System.Math.Round(firstTabletDataRows[i - 2][3] / maxDerivative, 3).ToString();
+                secondTabletDataRows[i - 2][2].ToString();
         }
+    }
+
+    void RedrawPowerExpGraph()
+    {
+        var powExpList = new List<float>();
+        for (int i = 1; i < secondTabletDataRows.Count - 1; i++)
+            powExpList.Add(secondTabletDataRows[i][2]);
+        secondGraphCreatorScript.RedrawSecondGraph(powExpList);
     }
 
     public void FillTabletTestData()

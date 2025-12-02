@@ -8,7 +8,8 @@ public class OnSwitchButtonScript : MonoBehaviour
 {
     SocketsSystemScript socketsSystemScript;
     public bool IsActivated = false;
-    bool isCooldown = false;
+    private bool isCooldown = false;
+    private float rotationDelta = 15f;
     // Start is called before the first frame update
     void Start()
     {
@@ -23,13 +24,31 @@ public class OnSwitchButtonScript : MonoBehaviour
 
     void StartSystem()
     {
-        transform.GetComponent<MeshRenderer>().material.color = Color.green;
+        var renderer = GetComponent<MeshRenderer>();
+        var mat = renderer.material;
+
+        mat.EnableKeyword("_EMISSION");
+        mat.SetColor("_EmissionColor", Color.red * 1f);
+
+        var rot = transform.eulerAngles;
+        rot.x -= rotationDelta;
+        transform.eulerAngles = rot;
+
         IsActivated = true;
     }
 
     void FinishSystem()
     {
-        transform.GetComponent<MeshRenderer>().material.color = Color.red;
+        var renderer = GetComponent<MeshRenderer>();
+        var mat = renderer.material;
+
+        mat.DisableKeyword("_EMISSION");
+        mat.SetColor("_EmissionColor", Color.black);
+
+        var rot = transform.eulerAngles;
+        rot.x += rotationDelta;
+        transform.eulerAngles = rot;
+
         IsActivated = false;
     }
 
@@ -42,7 +61,7 @@ public class OnSwitchButtonScript : MonoBehaviour
             StartSystem();
             StartCoroutine(Cooldown(0.5f));
         }
-        else{
+        else if (socketsSystemScript.IsAllMatched && IsActivated){
             FinishSystem(); 
             StartCoroutine(Cooldown(0.5f));
         }

@@ -1,75 +1,48 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Rendering;
 
 public class SocketScript : MonoBehaviour
 {
     public int SocketID;
-    bool isMatched = false;
-    bool isBeingMatched = false;
-    bool isCooldown = false;
-    void Start()
-    {
-        
-    }
+    [Tooltip("¬ каком направлении должен быть направлен коннектор")]
+    public Vector3 direction = Vector3.forward;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    private bool isMatched = false;
+    public bool IsMatched { get => isMatched; }
 
-    private void OnCollisionStay(Collision collision)
-    {
-        if (collision.gameObject.tag != "ContraptionMousePointer" || isCooldown)
-            return;
-        var mouseAction = InputSystem.GetDevice<Mouse>().leftButton.isPressed ? 1 : 0;
-        if (mouseAction > 0)
-        {
-            var socketSystem = GameObject.FindGameObjectWithTag("SocketsSystem").GetComponent<SocketsSystemScript>();
-            if (isBeingMatched || isMatched)
-            {
-                socketSystem.MatchTrippleOrReset(gameObject);
-                StartCoroutine(Cooldown(0.5f));
-                return;
-            }
-            isBeingMatched = true;
-            Material matchMaterial = Resources.Load<Material>("Objects/Contraption/SocketMatchingMaterial");
-            gameObject.GetComponent<MeshRenderer>().material = matchMaterial;
-            StartCoroutine(Cooldown(0.5f));
-            socketSystem.RegisterSocket(gameObject);
-        }
-    }
+    private Outline outline;
+    private bool isBeingMatched = false;
+
+    public void ApplyMatching() => isMatched = true;
 
     public void ResetSocket()
     {
         isBeingMatched = false;
         isMatched = false;
-        Material defaultMaterial = Resources.Load<Material>("Objects/Contraption/SocketMaterial");
-        Material wrongMaterial = Resources.Load<Material>("Objects/Contraption/SocketWrongMaterial");
-        gameObject.GetComponent<MeshRenderer>().material = wrongMaterial;
-        StartCoroutine(ResetMaterialAfterDelay(0.5f, defaultMaterial));
     }
 
-    public void ApplyMatching() 
+    private void OnCollisionStay(Collision collision)
     {
-        isMatched = true;
-        Material matchedMaterial = Resources.Load<Material>("Objects/Contraption/SocketMatchedMaterial");
-        gameObject.GetComponent<MeshRenderer>().material = matchedMaterial;
+        if (collision.gameObject.tag != "ContraptionMousePointer") return;
+
+        var mouseAction = InputSystem.GetDevice<Mouse>().leftButton.isPressed ? 1 : 0;
+        if (mouseAction > 0)
+        {
+            outline = GetComponentInChildren<Outline>();
+            var socketSystem = GameObject.FindGameObjectWithTag("SocketsSystem").GetComponent<SocketsSystemScript>();
+
+            if (isBeingMatched || isMatched || outline.IsOutlining) return;
+
+            isBeingMatched = true;
+            outline.StartOutline();
+            socketSystem.RegisterSocket(gameObject);
+        }
     }
 
-    System.Collections.IEnumerator Cooldown(float cooldownTimer)
+    private void OnDrawGizmosSelected()
     {
-        isCooldown = true;
-        yield return new WaitForSeconds(cooldownTimer);
-        isCooldown = false;
-    }
-
-    System.Collections.IEnumerator ResetMaterialAfterDelay(float delay, Material defaultMaterial)
-    {
-        isCooldown = true;
-        yield return new WaitForSeconds(delay);
-        gameObject.GetComponent<MeshRenderer>().material = defaultMaterial;
-        isCooldown = false;
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireCube(transform.position, Vector3.one * 0.005f); //ќтображает в какой точке по€витс€ коннектор
+        Gizmos.DrawRay(transform.position, transform.TransformDirection(direction) * 0.2f); //ќтображает в какую сторону будет выходить провод
     }
 }

@@ -19,7 +19,8 @@ public class ContraptionZoneData : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        var onSwitchData = transform.GetChild(0).GetChild(0).GetComponent<OnSwitchButtonScript>();
+        //var onSwitchData = transform.GetChild(0).GetChild(0).GetComponent<OnSwitchButtonScript>();
+        var onSwitchData = transform.GetComponentInChildren<OnSwitchButtonScript>();
         IsSystemOn = onSwitchData.IsActivated;
     }
 }
