@@ -4,13 +4,11 @@ using UnityEngine;
 public class EmitElectron : MonoBehaviour
 {
     [SerializeField] private ParticleSystem particleSystem;
-    [SerializeField] private ParticleSystem particleSystem2;
     [SerializeField] private GameObject lamp;
     [SerializeField] private OnSwitchButtonScript switchButtonScript;
     [SerializeField] private ContraptionZoneData data;
     [SerializeField] private Material emissionMaterial;
     [SerializeField] private Material defaultMaterial;
-    [SerializeField] private Camera lampCamera;
     [SerializeField] private GameObject anod;
     [SerializeField] private GameObject spiral;
 
@@ -18,10 +16,9 @@ public class EmitElectron : MonoBehaviour
     private Renderer spiralRenderer;
 
     private ParticleSystem.EmissionModule emissionModule;
-    private ParticleSystem.EmissionModule emissionModule2;
 
-    public float minEmission = 40f;
-    public float maxEmission = 200f;
+    public float minEmission = 400f;
+    public float maxEmission = 1000f;
 
     private void Start()
     {
@@ -32,20 +29,19 @@ public class EmitElectron : MonoBehaviour
         spiralRenderer.material = defaultMaterial;
 
         emissionModule = particleSystem.emission;
-        emissionModule2 = particleSystem2.emission;
     }
 
     void Update()
     {
-        if (!lampCamera.isActiveAndEnabled)
-        {
-            lamp.gameObject.SetActive(false);
-            return;
-        }
-        else
-        {
-            lamp.gameObject.SetActive(true);
-        }
+        //if (!lampCamera.isActiveAndEnabled)
+        //{
+        //    lamp.gameObject.SetActive(false);
+        //    return;
+        //}
+        //else
+        //{
+        //    lamp.gameObject.SetActive(true);
+        //}
 
         if (data.Voltage > 0 && switchButtonScript.IsActivated)
         {
@@ -59,7 +55,6 @@ public class EmitElectron : MonoBehaviour
             anodRenderer.material = defaultMaterial;
             spiralRenderer.material = defaultMaterial;
             emissionModule.rateOverTime = 0;
-            emissionModule2.rateOverTime = 0;
         }
     }
 
@@ -71,6 +66,5 @@ public class EmitElectron : MonoBehaviour
 
         float emissionValue = Mathf.Lerp(maxEmission, minEmission, factor);
         emissionModule.rateOverTime = emissionValue;
-        emissionModule2.rateOverTime = emissionValue;
     }
 }
