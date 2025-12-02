@@ -4,7 +4,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class OnSwitchButtonScript : MonoBehaviour
+public class OnSwitchButtonScript : MonoBehaviour, IClickable
 {
     SocketsSystemScript socketsSystemScript;
     public bool IsActivated = false;
@@ -52,24 +52,57 @@ public class OnSwitchButtonScript : MonoBehaviour
         IsActivated = false;
     }
 
-    private void OnCollisionStay(Collision collision)
-    {
-        var mouseAction = InputSystem.GetDevice<Mouse>().leftButton.isPressed ? 1 : 0;
-        if (collision.gameObject.tag != "ContraptionMousePointer" || isCooldown || mouseAction == 0)
-            return;
-        if (socketsSystemScript.IsAllMatched && !IsActivated){ 
-            StartSystem();
-            StartCoroutine(Cooldown(0.5f));
-        }
-        else if (socketsSystemScript.IsAllMatched && IsActivated){
-            FinishSystem(); 
-            StartCoroutine(Cooldown(0.5f));
-        }
-    }
+    //private void OnCollisionStay(Collision collision)
+    //{
+    //    var mouseAction = InputSystem.GetDevice<Mouse>().leftButton.isPressed ? 1 : 0;
+    //    if (collision.gameObject.tag != "ContraptionMousePointer" || isCooldown || mouseAction == 0)
+    //        return;
+    //    if (socketsSystemScript.IsAllMatched && !IsActivated){ 
+    //        StartSystem();
+    //        StartCoroutine(Cooldown(0.5f));
+    //    }
+    //    else if (socketsSystemScript.IsAllMatched && IsActivated){
+    //        FinishSystem(); 
+    //        StartCoroutine(Cooldown(0.5f));
+    //    }
+    //}
+
+    //private void OnMouseDown()
+    //{
+    //    if (socketsSystemScript.IsAllMatched && !IsActivated)
+    //    {
+    //        StartSystem();
+    //        StartCoroutine(Cooldown(0.5f));
+    //    }
+    //    else if (socketsSystemScript.IsAllMatched && IsActivated)
+    //    {
+    //        FinishSystem();
+    //        StartCoroutine(Cooldown(0.5f));
+    //    }
+    //}
+
     System.Collections.IEnumerator Cooldown(float cooldownTimer)
     {
         isCooldown = true;
         yield return new WaitForSeconds(cooldownTimer);
         isCooldown = false;
+    }
+
+    public void OnLeftClick()
+    {
+        if (socketsSystemScript.IsAllMatched && !IsActivated)
+        {
+            StartSystem();
+            StartCoroutine(Cooldown(0.5f));
+        }
+        else if (socketsSystemScript.IsAllMatched && IsActivated)
+        {
+            FinishSystem();
+            StartCoroutine(Cooldown(0.5f));
+        }
+    }
+
+    public void OnRightClick()
+    {
     }
 }

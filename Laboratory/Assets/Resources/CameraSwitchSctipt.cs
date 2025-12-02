@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class CameraSwitchSctipt : MonoBehaviour
+public class CameraSwitchSctipt : MonoBehaviour, IClickable
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     GameObject mousePointer;
@@ -22,20 +22,20 @@ public class CameraSwitchSctipt : MonoBehaviour
         ExitIfPressed();
     }
 
-    private void OnCollisionStay(Collision collision)
-    {
-        if (collision.gameObject.tag != "MousePointer" || isCameraSwitched)
-            return;
-        mousePointer = collision.gameObject;
-        var mouseAction = InputSystem.GetDevice<Mouse>().leftButton.isPressed ? 1 : 0;
-        if (mouseAction > 0)
-        {
-            CameraToSwitch.gameObject.SetActive(true);
-            mainCamera.gameObject.SetActive(false);
-            mousePointer.SetActive(false);
-            isCameraSwitched = true;
-        }
-    }
+    //private void OnCollisionStay(Collision collision)
+    //{
+    //    if (collision.gameObject.tag != "MousePointer" || isCameraSwitched)
+    //        return;
+    //    mousePointer = collision.gameObject;
+    //    var mouseAction = InputSystem.GetDevice<Mouse>().leftButton.isPressed ? 1 : 0;
+    //    if (mouseAction > 0)
+    //    {
+    //        CameraToSwitch.gameObject.SetActive(true);
+    //        mainCamera.gameObject.SetActive(false);
+    //        mousePointer.SetActive(false);
+    //        isCameraSwitched = true;
+    //    }
+    //}
 
     void ExitIfPressed()
     {
@@ -46,8 +46,32 @@ public class CameraSwitchSctipt : MonoBehaviour
         {
             mainCamera.gameObject.SetActive(true);
             CameraToSwitch.gameObject.SetActive(false);
-            mousePointer.SetActive(true);
+            //mousePointer.SetActive(true);
             isCameraSwitched = false;
         }
+
+        if (ClickManager.Instance != null)
+        {
+            ClickManager.Instance.SetActiveCamera(mainCamera);
+        }
+    }
+
+    public void OnLeftClick()
+    {
+        if (isCameraSwitched) return;
+
+        CameraToSwitch.gameObject.SetActive(true);
+        mainCamera.gameObject.SetActive(false);
+        //mousePointer.SetActive(false);
+        isCameraSwitched = true;
+
+        if (ClickManager.Instance != null)
+        {
+            ClickManager.Instance.SetActiveCamera(CameraToSwitch);
+        }
+    }
+
+    public void OnRightClick()
+    {
     }
 }

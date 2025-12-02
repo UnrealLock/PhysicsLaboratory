@@ -79,6 +79,35 @@ public class SocketsSystemScript : MonoBehaviour
         matchingSockets.Add(socketScript.SocketID);
     }
 
+    public void ResetAllConnections()
+    {
+        foreach (var line in FindObjectsOfType<LineRenderer>())
+        {
+            if (line.gameObject.name.StartsWith("Wire:"))
+                Destroy(line.gameObject);
+        }
+
+        var connectors = GameObject.FindObjectsOfType<Transform>()
+            .Where(t => t.name == "WireConnector")
+            .ToList();
+
+        foreach (var connector in connectors)
+            Destroy(connector.gameObject);
+
+        foreach (var socket in sockets)
+        {
+            if (socket == null) continue;
+            var socketScript = socket.GetComponent<SocketScript>();
+            socketScript.ResetSocket();
+
+            var outline = socket.GetComponentInChildren<Outline>();
+            if (outline != null)
+                outline.StopOutline();
+        }
+
+        matchingSockets.Clear();
+    }
+
     private bool CheckAllConnectionsMatched()
     {
         foreach (var pair in socketDictionary)
