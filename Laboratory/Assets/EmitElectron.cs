@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class EmitElectron : MonoBehaviour
 {
-    [SerializeField] private ParticleSystem particleSystem;
-    [SerializeField] private GameObject lamp;
+    [SerializeField] private ParticleSystem PSCathodeToGrid;
+    [SerializeField] private ParticleSystem PSGridToAnod;
     [SerializeField] private OnSwitchButtonScript switchButtonScript;
     [SerializeField] private ContraptionZoneData data;
     [SerializeField] private Material emissionMaterial;
@@ -15,7 +15,8 @@ public class EmitElectron : MonoBehaviour
     private Renderer anodRenderer;
     private Renderer spiralRenderer;
 
-    private ParticleSystem.EmissionModule emissionModule;
+    private ParticleSystem.EmissionModule EMGridToAnod;
+    private ParticleSystem.EmissionModule EMCathodeToGrid;
 
     public float minEmission = 400f;
     public float maxEmission = 1000f;
@@ -28,7 +29,8 @@ public class EmitElectron : MonoBehaviour
         anodRenderer.material = defaultMaterial;
         spiralRenderer.material = defaultMaterial;
 
-        emissionModule = particleSystem.emission;
+        EMGridToAnod = PSGridToAnod.emission;
+        EMCathodeToGrid = PSCathodeToGrid.emission;
     }
 
     void Update()
@@ -43,6 +45,15 @@ public class EmitElectron : MonoBehaviour
         //    lamp.gameObject.SetActive(true);
         //}
 
+        if (switchButtonScript.IsActivated)
+        {
+            EMCathodeToGrid.rateOverTime = 1000f;
+        }
+        else
+        {
+            EMCathodeToGrid.rateOverTime = 0f;
+        }
+
         if (data.Voltage > 0 && switchButtonScript.IsActivated)
         {
             anodRenderer.material = emissionMaterial;
@@ -54,7 +65,7 @@ public class EmitElectron : MonoBehaviour
         {
             anodRenderer.material = defaultMaterial;
             spiralRenderer.material = defaultMaterial;
-            emissionModule.rateOverTime = 0;
+            EMGridToAnod.rateOverTime = 0;
         }
     }
 
@@ -65,6 +76,6 @@ public class EmitElectron : MonoBehaviour
         float factor = voltage / 0.46f;
 
         float emissionValue = Mathf.Lerp(maxEmission, minEmission, factor);
-        emissionModule.rateOverTime = emissionValue;
+        EMGridToAnod.rateOverTime = emissionValue;
     }
 }

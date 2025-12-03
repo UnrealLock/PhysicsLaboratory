@@ -6,6 +6,8 @@ using UnityEngine.InputSystem;
 
 public class OnSwitchButtonScript : MonoBehaviour, IClickable
 {
+    [SerializeField] private GameObject message;
+
     SocketsSystemScript socketsSystemScript;
     public bool IsActivated = false;
     private bool isCooldown = false;
@@ -88,6 +90,13 @@ public class OnSwitchButtonScript : MonoBehaviour, IClickable
         isCooldown = false;
     }
 
+    IEnumerator ShowMessage() // сообщение о неправильной сборке, при замыкании ключа
+    {
+        message.SetActive(true);
+        yield return new WaitForSeconds(1.2f);
+        message.SetActive(false);
+    }
+
     public void OnLeftClick()
     {
         if (socketsSystemScript.IsAllMatched && !IsActivated)
@@ -99,6 +108,10 @@ public class OnSwitchButtonScript : MonoBehaviour, IClickable
         {
             FinishSystem();
             StartCoroutine(Cooldown(0.5f));
+        }
+        else
+        {
+           StartCoroutine(ShowMessage());
         }
     }
 
