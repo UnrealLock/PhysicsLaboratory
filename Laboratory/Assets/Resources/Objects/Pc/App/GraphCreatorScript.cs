@@ -44,11 +44,19 @@ public class GraphCreatorScript : MonoBehaviour
         var dot = Instantiate(dotObj);
         dot.transform.SetParent(graphField.transform, false);
         dot.transform.localPosition = new Vector3((float)(zero.x + x * pixelSize * xPixels / xFirstValue),
+<<<<<<< HEAD
             (float)(zero.y + y * scale * pixelSize * yPixels / yFirstValue), -0.5f);
         if (xList.Count > 1)
         {
             var previousDotPosition = new Vector3((float)(zero.x + xList[xList.Count - 2] * pixelSize * xPixels / xFirstValue),
                 (float)(zero.y + yList[yList.Count - 2] * scale * pixelSize * yPixels / yFirstValue), -0.5f);
+=======
+            (float)(zero.y + y * scale * pixelSize * yPixels / yFirstValue), -100f);
+        if (xList.Count > 1)
+        {
+            var previousDotPosition = new Vector3((float)(zero.x + xList[xList.Count - 2] * pixelSize * xPixels / xFirstValue),
+                (float)(zero.y + yList[yList.Count - 2] * scale * pixelSize * yPixels / yFirstValue), -100f);
+>>>>>>> Pc-and-Contraption
             var line = Instantiate(lineObj);
             line.transform.SetParent(graphField.transform, false);
             line.transform.localPosition = (dot.transform.localPosition + previousDotPosition) / 2;
